@@ -31,11 +31,18 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '10mb' }));
 
+app.set('trust proxy', 1); // Trust first proxy (Render)
+
 // Session Middleware
 app.use(session({
     secret: process.env.JWT_SECRET || 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // true on Render
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' required for cross-site
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
 // Passport Middleware
