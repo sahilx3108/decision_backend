@@ -17,10 +17,12 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Google Strategy
+const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
+
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/auth/google/callback'
+    callbackURL: `${backendUrl}/api/auth/google/callback`
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         let user = await User.findOne({ googleId: profile.id });
@@ -60,7 +62,7 @@ passport.use(new GoogleStrategy({
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: '/api/auth/github/callback',
+    callbackURL: `${backendUrl}/api/auth/github/callback`,
     scope: ['user:email']
 }, async (accessToken, refreshToken, profile, done) => {
     try {
